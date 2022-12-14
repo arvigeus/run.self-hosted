@@ -1,0 +1,23 @@
+version: '3'
+services:
+  homarr:
+    container_name: homarr
+    image: ghcr.io/ajnart/homarr:latest
+    restart: on-failure
+    privileged: true
+    ports:
+      - 7575:7575
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./container-data/app/data/configs:/app/data/configs:z
+      - ./container-data/app/public/icons:/app/public/icons:z
+      - ${DOCKER_SOCK}:/var/run/docker.sock:z
+    environment:
+      TZ: ${TZ}
+    networks:
+      - DOCKER_NETWORK
+
+networks:
+  DOCKER_NETWORK:
+    external: true
+    name: ${DOCKER_NETWORK}

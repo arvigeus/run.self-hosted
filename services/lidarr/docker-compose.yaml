@@ -1,0 +1,27 @@
+version: '3'
+services:
+  lidarr:
+    container_name: lidarr
+    image: youegraillot/lidarr-on-steroids
+    restart: on-failure
+    ports:
+      - 8686:8686 # Lidarr web UI
+      - 6595:6595 # Deemix web UI
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+      UMASK: 002
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./container-data/config:/config:z
+      - ./container-data/config_deemix:/config_deemix:z
+      - ${TORRENTS_MUSIC_DIR}:/data/torrents/music:z
+      - ${MEDIA_MUSIC_DIR}:/data/media/music:z
+    networks:
+      - DOCKER_NETWORK
+
+networks:
+  DOCKER_NETWORK:
+    external: true
+    name: ${DOCKER_NETWORK}

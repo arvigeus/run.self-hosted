@@ -1,0 +1,27 @@
+version: '3'
+services:
+  radarr:
+    container_name: radarr
+    image: ghcr.io/hotio/radarr:latest
+    restart: on-failure
+    ports:
+      - 7878:7878
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./container-data/config:/config:z
+      # ${HOST}/settings/downloadclients -> Remote Path Mappings
+      - ${TORRENTS_MOVIES_DIR}:/data/torrents/movies:z
+      # ${HOST}/settings/mediamanagement -> Root folders
+      - ${MEDIA_MOVIES_DIR}:/data/media/movies:z
+    environment:
+      TZ: ${TZ}
+      PUID: ${PUID}
+      PGID: ${PGID}
+      UMASK: 002
+    networks:
+      - DOCKER_NETWORK
+
+networks:
+  DOCKER_NETWORK:
+    external: true
+    name: ${DOCKER_NETWORK}

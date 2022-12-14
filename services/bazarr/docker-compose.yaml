@@ -1,0 +1,27 @@
+version: '3'
+services:
+  bazarr:
+    container_name: bazarr
+    image: ghcr.io/hotio/bazarr:latest
+    restart: on-failure
+    ports:
+      - 6767:6767
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./container-data/config:/config:z
+      # ${HOST}/settings/radarr
+      - ${MEDIA_MOVIES_DIR}:/data/media/movies:z
+      # ${HOST}/settings/sonarr
+      - ${MEDIA_TV_DIR}:/data/media/tv:z
+    environment:
+      TZ: ${TZ}
+      PUID: ${PUID}
+      PGID: ${PGID}
+      UMASK: 002
+    networks:
+      - DOCKER_NETWORK
+
+networks:
+  DOCKER_NETWORK:
+    external: true
+    name: ${DOCKER_NETWORK}

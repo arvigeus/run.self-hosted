@@ -1,0 +1,27 @@
+version: '3'
+services:
+  sonarr:
+    container_name: sonarr
+    image: ghcr.io/hotio/sonarr:latest
+    restart: on-failure
+    ports:
+      - 8989:8989
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./container-data/config:/config:z
+      # ${HOST}/settings/downloadclients -> Remote Path Mappings
+      - ${TORRENTS_TV_DIR}:/data/torrents/tv:z
+      # ${HOST}/settings/mediamanagement -> Root folders
+      - ${MEDIA_TV_DIR}:/data/media/tv:z
+    environment:
+      TZ: ${TZ}
+      PUID: ${PUID}
+      PGID: ${PGID}
+      UMASK: 002
+    networks:
+      - DOCKER_NETWORK
+
+networks:
+  DOCKER_NETWORK:
+    external: true
+    name: ${DOCKER_NETWORK}

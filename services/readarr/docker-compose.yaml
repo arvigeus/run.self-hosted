@@ -1,0 +1,27 @@
+version: '3'
+services:
+  readarr:
+    container_name: readarr
+    image: ghcr.io/hotio/readarr:latest
+    restart: on-failure
+    ports:
+      - 8787:8787
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./container-data/config:/config:z
+      # ${HOST}/settings/mediamanagement -> Remote Path Mappings
+      - ${TORRENTS_BOOKS_DIR}:/data/torrents/books:z
+      # ${HOST}/settings/mediamanagement -> Root Folders
+      - ${MEDIA_BOOKS_DIR}:/data/media/books:z
+    environment:
+      TZ: ${TZ}
+      PUID: ${PUID}
+      PGID: ${PGID}
+      UMASK: 002
+    networks:
+      - DOCKER_NETWORK
+
+networks:
+  DOCKER_NETWORK:
+    external: true
+    name: ${DOCKER_NETWORK}

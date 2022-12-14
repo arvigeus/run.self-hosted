@@ -1,0 +1,26 @@
+---
+version: "3"
+services:
+  yacht:
+    container_name: yacht
+    hostname: yacht
+    privileged: true
+    restart: on-failure
+    ports:
+      - 8000:8000
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+      DOCKER_NETWORK: ${DOCKER_NETWORK}
+    volumes:
+      - ./container-data/config:/config:z
+      - ${DOCKER_SOCK}:/var/run/docker.sock:z
+    image: ghcr.io/selfhostedpro/yacht:latest
+    networks:
+      - DOCKER_NETWORK
+
+networks:
+  DOCKER_NETWORK:
+    external: true
+    name: ${DOCKER_NETWORK}

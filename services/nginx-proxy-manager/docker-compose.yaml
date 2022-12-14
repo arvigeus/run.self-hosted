@@ -1,0 +1,43 @@
+version: '3'
+services:
+  nginx-proxy-manager:
+    container_name: nginx-proxy-manager
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: on-failure
+    ports:
+      - 80:80
+      - 81:81
+      - 443:443
+    environment:
+      - DB_MYSQL_HOST=nginx-proxy-manager-db
+      - DB_MYSQL_PORT=3306
+      - DB_MYSQL_USER=${NPM_DATABASE_USER}
+      - DB_MYSQL_PASSWORD=${NPM_DATABASE_PASSWORD}
+      - DB_MYSQL_NAME=${NPM_DATABASE}
+    volumes:
+      - ./container-data/data:/data:z
+      - ./container-data/letsencrypt:/etc/letsencrypt:z
+    networks:
+      - DOCKER_NETWORK
+      - nginx-proxy-manager-nw
+
+  nginx-proxy-manager-db:
+    container_name: nginx-proxy-manager-db
+    image: 'jc21/mariadb-aria:latest'
+    restart: on-failure
+    environment:
+      - MYSQL_DATABASE=${NPM_DATABASE}
+      - MYSQL_USER=${NPM_DATABASE_USER}
+      - MYSQL_PASSWORD=${NPM_DATABASE_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${NPM_DATABASE_ROOT_PASSWORD}
+    volumes:
+      - ./container-data/var/lib/mysql:/var/lib/mysql:z
+    networks:
+      - nginx-proxy-manager-nw
+
+networks:
+  DOCKER_NETWORK:
+    external: true
+    name: ${DOCKER_NETWORK}
+  nginx-proxy-manager-nw:
+    name: nginx-proxy-manager-nw

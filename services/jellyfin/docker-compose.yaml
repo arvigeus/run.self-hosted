@@ -1,0 +1,25 @@
+version: '3'
+services:
+  jellyfin:
+    container_name: jellyfin
+    image: ghcr.io/hotio/jellyfin:latest
+    restart: on-failure
+    ports:
+      - 8096:8096
+      - 7359:7359/udp
+      - 8920:8920
+    volumes:
+      - ./container-data/config:/config:z
+      - ${MEDIA_DIR}:/data/media:z
+    environment:
+      TZ: ${TZ}
+      PUID: ${PUID}
+      PGID: ${PGID}
+      UMASK: 002
+    networks:
+      - DOCKER_NETWORK
+
+networks:
+  DOCKER_NETWORK:
+    external: true
+    name: ${DOCKER_NETWORK}

@@ -1,0 +1,19 @@
+version: '3'
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    privileged: true
+    restart: on-failure
+    volumes:
+      - ./container-data/data:/data:z
+      - ${DOCKER_SOCK}:/var/run/docker.sock:z
+    ports:
+      - 9443:9443
+    networks:
+      - DOCKER_NETWORK
+
+networks:
+  DOCKER_NETWORK:
+    external: true
+    name: ${DOCKER_NETWORK}
